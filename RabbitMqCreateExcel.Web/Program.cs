@@ -7,9 +7,9 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(x =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    x.UseSqlServer(builder.Configuration.GetConnectionString("RabbitMqApp"), options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RabbitMqApp"), options =>
     {
         options.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext))!.GetName().Name);
     });
