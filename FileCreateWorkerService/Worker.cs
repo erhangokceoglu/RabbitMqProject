@@ -1,12 +1,10 @@
 using ClosedXML.Excel;
 using FileCreateWorkerService.Models;
 using FileCreateWorkerService.Services;
-using Microsoft.AspNetCore.Http;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMqCreateExcel.Web.Models;
 using System.Data;
-using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Text.Json;
 
@@ -37,6 +35,7 @@ namespace FileCreateWorkerService
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var consumer = new AsyncEventingBasicConsumer(_channel);
+            _channel.BasicConsume(RabbitMqClientService.QueueName, false, consumer);
             consumer.Received += Consumer_Received;
             return Task.CompletedTask;
         }

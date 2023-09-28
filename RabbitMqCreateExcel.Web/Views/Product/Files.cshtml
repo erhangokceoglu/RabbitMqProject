@@ -22,9 +22,26 @@
             <td> @item.GetCreatedDate </td>
             <td> @item.FileStatus </td>
             <td>
-                <a href="~/files/@item.FilePath" class="btn btn-primary @(item.FileStatus==FileStatus.Creating ? "disabled": "")"></a>
+                <a href="~/files/@item.FilePath" class="btn btn-primary @(item.FileStatus==FileStatus.Creating ? "disabled": "")">Download</a>
             </td>
         </tr>
     }
 </table>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var hasStartCreatingExcel = '@TempData["StartCreationExcel"]';
+            if (hasStartCreatingExcel) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Excel oluşturma işlemi başlamıştır.Bittiği zaman bildiri alacaksınız.',
+                    showConfirmButton: false,
+                    Timer: 2500
+                });
+            };
+        });
+    </script>
+}
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using RabbitMqCreateExcel.Web.Contexts;
+using RabbitMqCreateExcel.Web.Hubs;
 
 namespace RabbitMqCreateExcel.Web.Controllers
 {
@@ -9,10 +11,12 @@ namespace RabbitMqCreateExcel.Web.Controllers
     public class FilesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IHubContext<MyHub> _hubContext;
 
-        public FilesController(AppDbContext context)
+        public FilesController(AppDbContext context, IHubContext<MyHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -28,6 +32,7 @@ namespace RabbitMqCreateExcel.Web.Controllers
             userfile.FilePath = filePath;
             userfile.FileStatus = Enums.FileStatus.Completed;
             await _context.SaveChangesAsync();
+            await _hubContext.Clients.User(userfile.UserId).SendAsync("CompletedFile");
             return Ok();
         }
     }

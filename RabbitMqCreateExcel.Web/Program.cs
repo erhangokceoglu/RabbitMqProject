@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using RabbitMqCreateExcel.Web.Contexts;
+using RabbitMqCreateExcel.Web.Hubs;
 using RabbitMqCreateExcel.Web.Services;
+using Microsoft.AspNetCore.SignalR;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,7 @@ builder.Services.AddSingleton<RabbitMqClientService>();
 builder.Services.AddSingleton<RabbitMqPublisher>();
 
 // Add services to the container.
+builder.Services.AddSignalR();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -63,7 +66,9 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+#pragma warning disable ASP0014 // Suggest using top level route registrations
+app.UseEndpoints(endpoints =>
+endpoints.MapHub<MyHub>("/Myhub"));
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
